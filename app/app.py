@@ -245,13 +245,13 @@ with col2:
     )
 
 
-    # =====================================
+   # =====================================
 # PREDICT BUTTON
 # =====================================
 
 if st.button("🔍 Predict Academic Risk", key="predict_btn"):
 
-    # Convert display values to model values
+    # Convert display values
 
     school = "GP" if "Gabriel" in school_display else "MS"
 
@@ -264,6 +264,7 @@ if st.button("🔍 Predict Academic Risk", key="predict_btn"):
     famsup = famsup_display.lower()
 
     higher = higher_display.lower()
+
 
     # Create dataframe
 
@@ -291,40 +292,48 @@ if st.button("🔍 Predict Academic Risk", key="predict_btn"):
 
     })
 
-    # Prediction
 
-    prediction = model.predict(input_data)[0]
+    # ==========================
+    # Encoding
+    # ==========================
 
-    probability = model.predict_proba(input_data)[0][1]
-
-#if st.button("🔍 Predict Academic Risk", key="predict_academic_risk"):
-
-    school = "GP" if "Gabriel" in school_display else "MS"
-    sex = "F" if gender_display == "Female" else "M"
-    address = "U" if address_display == "Urban" else "R"
-
-    schoolsup = schoolsup_display.lower()
-    famsup = famsup_display.lower()
-    higher = higher_display.lower()
-
-    input_data = pd.DataFrame({
-        "school":[school],
-        "sex":[sex],
-        "age":[age],
-        "address":[address],
-        "Medu":[Medu],
-        "Fedu":[Fedu],
-        "studytime":[studytime],
-        "failures":[failures],
-        "schoolsup":[schoolsup],
-        "famsup":[famsup],
-        "higher":[higher],
-        "absences":[absences],
-        "G1":[G1],
-        "G2":[G2]
+    input_data["school"] = input_data["school"].map({
+        "GP":0,
+        "MS":1
     })
 
+    input_data["sex"] = input_data["sex"].map({
+        "F":0,
+        "M":1
+    })
+
+    input_data["address"] = input_data["address"].map({
+        "R":0,
+        "U":1
+    })
+
+    input_data["schoolsup"] = input_data["schoolsup"].map({
+        "no":0,
+        "yes":1
+    })
+
+    input_data["famsup"] = input_data["famsup"].map({
+        "no":0,
+        "yes":1
+    })
+
+    input_data["higher"] = input_data["higher"].map({
+        "no":0,
+        "yes":1
+    })
+
+
+    # ==========================
+    # Prediction
+    # ==========================
+
     prediction = model.predict(input_data)[0]
+
     probability = model.predict_proba(input_data)[0][1]
 
 
@@ -334,11 +343,9 @@ if st.button("🔍 Predict Academic Risk", key="predict_btn"):
     padding:20px;
     border-radius:12px;
     text-align:center;
-    margin-bottom:20px;
-    box-shadow:0px 4px 10px rgba(0,0,0,0.3);
     ">
-    <h3 style="color:white;margin:0;">Risk Probability</h3>
-    <h1 style="color:white;margin-top:10px;">{probability:.1%}</h1>
+    <h3 style="color:white;">Risk Probability</h3>
+    <h1 style="color:white;">{probability:.1%}</h1>
     </div>
     """, unsafe_allow_html=True)
 
@@ -361,15 +368,14 @@ if st.button("🔍 Predict Academic Risk", key="predict_btn"):
 
 ✅ Monitor academic performance
 
-✅ Involve teachers and parents if necessary
+✅ Involve teachers and parents
 """)
 
     else:
 
         st.success("✅ Student is currently not identified as high risk.")
+
         st.balloons()
-
-
 # ==============================
 # FOOTER
 # ==============================

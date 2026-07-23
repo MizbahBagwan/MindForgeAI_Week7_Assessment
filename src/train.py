@@ -3,8 +3,8 @@ import joblib
 
 from sklearn.ensemble import RandomForestClassifier
 
-from src.data import load_data
-from src.features import preprocess_data
+from data import load_data
+from features import preprocess_data
 
 
 def train():
